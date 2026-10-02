@@ -1,0 +1,9 @@
+{
+  "name": "ai-code-review-rd-quality-assistant",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitLab webhook driven AI code review assistant",
+  "main": "src/server.js",
+  "scripts": { "start": "node src/server.js", "dev": "node --watch src/server.js" },
+  "engines": { "node": ">=18" }
+}

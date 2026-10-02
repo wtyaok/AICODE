@@ -1,0 +1,64 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: review_assistant
+      MYSQL_USER: review
+      MYSQL_PASSWORD: review
+      MYSQL_ROOT_PASSWORD: root-review
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  redis:
+    image: redis:7.4-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+  analyzer:
+    build: ./analyzer
+    environment:
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+    ports:
+      - "8000:8000"
+  backend:
+    build: ./backend
+    environment:
+      MYSQL_URL: jdbc:mysql://mysql:3306/review_assistant?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+      MYSQL_USER: review
+      MYSQL_PASSWORD: review
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      ANALYZER_URL: http://analyzer:8000
+      GITLAB_URL: ${GITLAB_URL:-https://gitlab.com}
+      GITLAB_TOKEN: ${GITLAB_TOKEN:-}
+      GITLAB_WEBHOOK_SECRET: ${GITLAB_WEBHOOK_SECRET:?Set GITLAB_WEBHOOK_SECRET in .env}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?Set ADMIN_API_KEY in .env}
+      COMMENT_ENABLED: ${COMMENT_ENABLED:-true}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      analyzer:
+        condition: service_started
+    ports:
+      - "8080:8080"
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+volumes:
+  mysql-data:
+  redis-data:

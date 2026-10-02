@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <title>AI 代码评审与研发质量助手</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark">CR</span>
+        <div>
+          <strong>代码评审助手</strong>
+          <small>AI R&amp;D Quality Assistant</small>
+        </div>
+      </div>
+      <button id="new-review" class="primary">+ 新建评审</button>
+    </header>
+
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">ENGINEERING QUALITY</p>
+          <h1>让每一次代码变更<br /><em>都可追踪、可改进</em></h1>
+          <p class="sub">
+            连接 GitLab Merge Request，结合规则检查与智能分析，及时发现风险并沉淀反馈。
+          </p>
+        </div>
+        <div class="hero-stat">
+          <span id="health-dot"></span>
+          <b id="health">服务检查中</b>
+          <small id="health-time"></small>
+        </div>
+      </section>
+
+      <section class="stats">
+        <article>
+          <span>评审任务</span>
+          <b id="stat-tasks">0</b>
+          <small>全部任务</small>
+        </article>
+        <article>
+          <span>发现问题</span>
+          <b id="stat-findings">0</b>
+          <small>规则 + AI</small>
+        </article>
+        <article>
+          <span>待处理</span>
+          <b id="stat-open">0</b>
+          <small>需要关注</small>
+        </article>
+        <article class="severity">
+          <span>风险分布</span>
+          <div>
+            <i class="critical" id="critical">0</i>
+            <i class="high" id="high">0</i>
+            <i class="medium" id="medium">0</i>
+            <i class="low" id="low">0</i>
+          </div>
+          <small>严重 / 高 / 中 / 低</small>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">REVIEW QUEUE</p>
+            <h2>评审任务</h2>
+          </div>
+          <div class="filters">
+            <input id="search" placeholder="搜索项目或任务" />
+            <select id="status">
+              <option value="">全部状态</option>
+              <option value="completed">已完成</option>
+              <option value="processing">处理中</option>
+              <option value="failed">失败</option>
+            </select>
+          </div>
+        </div>
+        <div id="tasks" class="tasks"></div>
+      </section>
+    </main>
+
+    <dialog id="review-dialog">
+      <form method="dialog" id="review-form">
+        <div class="dialog-head">
+          <h2>新建评审任务</h2>
+          <button value="cancel" class="close">×</button>
+        </div>
+        <label>
+          任务标题
+          <input name="title" required value="手动代码评审" />
+        </label>
+        <label>
+          项目 ID（可选）
+          <input name="projectId" placeholder="group/project 或数字 ID" />
+        </label>
+        <label>
+          Merge Request IID（可选）
+          <input name="iid" type="number" placeholder="例如 12" />
+        </label>
+        <label>
+          Git diff
+          <textarea
+            name="diff"
+            required
+            placeholder="粘贴 unified diff；配置 GitLab 后可只填写项目和 MR"
+          ></textarea>
+        </label>
+        <label class="check">
+          <input name="postComment" type="checkbox" checked />
+          评审后回写 GitLab 评论
+        </label>
+        <div class="dialog-actions">
+          <button value="cancel" class="secondary">取消</button>
+          <button class="primary" value="default">开始评审</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="detail-dialog">
+      <div class="dialog-head">
+        <h2 id="detail-title">评审详情</h2>
+        <button id="detail-close" class="close">×</button>
+      </div>
+      <div id="detail"></div>
+    </dialog>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

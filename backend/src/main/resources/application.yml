@@ -1,0 +1,28 @@
+server:
+  port: ${PORT:8080}
+spring:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/review_assistant?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC}
+    username: ${MYSQL_USER:review}
+    password: ${MYSQL_PASSWORD:review}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+review:
+  gitlab-url: ${GITLAB_URL:https://gitlab.com}
+  gitlab-token: ${GITLAB_TOKEN:}
+  webhook-secret: ${GITLAB_WEBHOOK_SECRET:}
+  admin-key: ${ADMIN_API_KEY:}
+  analyzer-url: ${ANALYZER_URL:http://localhost:8000}
+  max-diff-chars: ${MAX_DIFF_CHARS:60000}
+  comment-enabled: ${COMMENT_ENABLED:true}

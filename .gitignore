@@ -1,0 +1,11 @@
+node_modules/
+.env
+data/store.json
+*.log
+frontend/node_modules.stale/
+frontend/dist/
+analyzer/.pytest_cache/
+analyzer/__pycache__/
+analyzer/app/__pycache__/
+analyzer/tests/__pycache__/
+backend/target/
